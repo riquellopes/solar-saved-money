@@ -35,7 +35,7 @@ def calculator(value):
     return [e.text_content().strip() for e in html.fromstring(response.text).xpath('//td[@id = "total-a-pagar-valor"]')]
 
 
-def getSummary():
+def get_summary():
     basic_auth = HTTPBasicAuth(AURORA_USER, AURORA_PASS)
     response = requests.get(AURORA_ENERGY.format(AURORA_EIDS), auth=basic_auth)
 
