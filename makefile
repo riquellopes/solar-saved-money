@@ -1,17 +1,18 @@
 .SILENT:
-PIP=.venv/bin/pip
-PYTEST=.venv/bin/pytest
-PYTHON=.venv/bin/python
 
 venv:
-	virtualenv .venv --python=python3
+	pyenv virtualenv 3.8.0 saved
+	pyenv activate saved
 
 setup:venv
-	${PIP} install -U pip
-	${PIP} install -r requirements-dev.txt
+	pip3 install -U pip3
+	pip3 install -r requirements-dev.txt
 
 clean:
 	find . -name "*.pyc" -exec rm -rf {} \;
 
 run:
-	${PYTHON} main.py
+	python main.py
+
+test:clean
+	PYTHONPATH=save_money pytest -s -v --cov=save_money --cov-report term-missing save_money/tests/${path}
