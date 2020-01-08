@@ -5,3 +5,4 @@ ipdb==0.12.3
 flake8==3.7.9
 pytest-cov==2.8.1
 pytest-mock==2.0.0
+responses==0.10.9
