@@ -6,7 +6,6 @@ from lxml import html
 from urllib.parse import urlparse
 from fake_useragent import UserAgent
 
-# http://simulador.light.com.br/Conta/teSimuladorConta_2.asp
 SIMULATOR = os.environ.get('SIMULATOR')
 
 
