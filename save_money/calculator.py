@@ -1,11 +1,13 @@
 import abc
+import os
 import requests
 from math import ceil
 from lxml import html
 from urllib.parse import urlparse
 from fake_useragent import UserAgent
 
-SIMULATOR = None
+# http://simulador.light.com.br/Conta/teSimuladorConta_2.asp
+SIMULATOR = os.environ.get('SIMULATOR')
 
 
 class BaseCalculator:
@@ -22,11 +24,21 @@ class BaseCalculator:
 class LightCalculator:
    
     def calc(self, volts: float) -> float:
-        return self._request(volts)
+        result = self._request(volts)[0]
+        return float(result.replace(',', '.'))
    
-    def _request(self, volts: float):
+    def _request(self, volts: float) -> str:
         ua = UserAgent()
-        payload = "mesRef={}&_action=conta&classeConsumo=Residencial&medidorTipo=50&consumoAtual={}&hidresultado=sim"
+        
+        payload = {
+           "mesRef": self._month_reference,
+           "_action": 'conta',
+           "classeConsumo": "Residencial",
+           "medidorTipo": 50,
+           "consumoAtual": ceil(volts),
+           "hidresultado": "sim"
+        }
+
         headers = {
             'Content-Type': "application/x-www-form-urlencoded",
             'User-Agent': ua.random,
@@ -40,14 +52,14 @@ class LightCalculator:
             'cache-control': "no-cache"
         }
 
-        response = requests.request("POST", SIMULATOR, data=payload.format(
-            self.month_referencie, ceil(volts)), headers=headers)
-          
+        response = requests.request(
+            "POST", SIMULATOR, data=payload, headers=headers)
+
         return [e.text_content().strip() for e in html.fromstring(
             response.text).xpath('//td[@id = "total-a-pagar-valor"]')]
 
     @property
-    def month_reference(self):
+    def _month_reference(self):
         base_month = 20238
         return base_month
 
@@ -60,6 +72,5 @@ class Calculator:
     LIGHT = 'light'
 
     @staticmethod
-    def build(type: str, volts: float) -> str:
-        calculator = LightCalculator()
-        return calculator.calc(volts)
+    def build(type: str) -> BaseCalculator:
+        return LightCalculator()

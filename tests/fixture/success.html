@@ -1,0 +1,716 @@
+<html>
+<head>
+    <title>Light - Clientes - Simulador de Conta</title>
+    <script type="text/javascript">
+        function recordOutboundLink(link, category, action) {
+            try {
+                var portalpageTracker = _gat._getTracker("UA-7723793-7");
+                portalpageTracker._trackEvent(category, action);
+                setTimeout('window.open = "' + link.href + '"', 100)
+            } catch (err) { }
+        }
+    </script>
+    <link href="site.css" rel="stylesheet" type="text/css" />
+    <link href="menu.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+        .3as {
+            width: 600px;
+            border: 0;
+        }
+
+            .3as h2 {
+                color: #060;
+                font-size: 16px;
+            }
+
+            .3as p, .3as ol li {
+                font-size: 13px;
+                font-family: Arial, Helvetica, sans-serif;
+                color: #006600;
+            }
+
+        #dados1 {
+            font-size: 10px;
+        }
+
+        .tabelaConta {
+            margin: 0;
+            border-collapse: collapse;
+        }
+
+            .tabelaConta thead th {
+                text-transform: uppercase;
+                background-color: #BAE5EC;
+            }
+
+            .tabelaConta thead th, .tabelaConta tbody th, .tabelaConta tbody td {
+                font-family: Verdana, Arial, Helvetica, sans-serif;
+                font-size: 10px;
+            }
+
+        #tb-descricao {
+            width: 100%;
+        }
+
+            #tb-descricao tbody td {
+                padding: 3px;
+            }
+
+        #frase {
+            color: red;
+            font-size: 11px;
+            font-family: Verdana, Arial, Helvetica, sans-serif;
+        }
+
+        #frase2 {
+            color: #006600;
+            font-size: 11px;
+            font-family: Verdana, Arial, Helvetica, sans-serif;
+        }
+
+        #total-a-pagar {
+            font-family: Verdana, Arial, Helvetica, sans-serif;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+
+        #total-a-pagar {
+            background-color: #ffdcb1;
+        }
+
+        #total-a-pagar-valor {
+            text-align: right;
+            font-size: 14px;
+        }
+
+        #residencialDesconto {
+        }
+
+            #residencialDesconto h3 {
+                font-size: 15px;
+                font-weight: bold;
+                color: #006600;
+            }
+
+            #residencialDesconto h4, #residencialDesconto ul li {
+                color: red;
+                font-size: 11px;
+            }
+
+            #residencialDesconto h4 {
+                text-decoration: underline;
+            }
+
+            #residencialDesconto ul {
+                list-style-type: square;
+                margin: 5px 0px 0px 10px;
+                list-style-position: inside;
+            }
+
+        .input_tarifas {
+            text-align: right;
+            background: #FFF;
+            font: normal 11px verdana;
+            border: 1px solid #066D15;
+            width: 41px;
+            padding: 2px 5px 0 0;
+            margin: -1px 0 0 6px;
+            height: 20px;
+        }
+
+        .faixa_hide_3 {
+            display: none;
+        }
+
+        .style1 {
+            width: 574px;
+        }
+    </style>
+    <script type="text/javascript" src="valores.js"></script>
+    <script type="text/javascript">
+   <!--
+    function clearForm(form){
+        document.location.href= 'teSimuladorConta_2.asp';
+    }
+
+    // abrirDicas: abre uma nova janela com dicas de consumo, ou abre
+    //    na mesma janela várias dicas, caso diferenca > 100.
+    function abrirDicas(diferenca) {
+        if (diferenca > 0) {
+            if (diferenca > 100)
+                document.location.href = "teDicas.shtml";
+            else {
+                var pos = ",top=" + String(screen.availHeight / 2 - 300 / 2 - 20) + ",left=" + String(screen.availWidth / 2 - 300 / 2);
+                var jan = window.open("teDica.asp?diferenca=" + diferenca, "consMedidores1", "directories=no,toolbar=no,menubar=no,scrollbars=no,resizable=yes,width=418,height=370" + pos);
+            }
+        }
+    }
+
+    function defTipoInstalacao(){
+        var classe   = document.form.classeConsumo.value;
+        //Instalação Baixa Renda só pode ser do Tipo monofásico
+        //if (classe == 'Residencial - Tarifa Social') {
+        //document.form.medidorTipo[0].checked = true;
+        //}
+        if ( (classe == 'Residencial') || (classe == 'Não Residencial') || (classe == 'Rural')) {
+            if( (document.form.medidorTipo[0].checked == false) && (document.form.medidorTipo[1].checked == false) && (document.form.medidorTipo[2].checked == false)) {
+                document.form.medidorTipo[0].checked = false;
+                document.form.medidorTipo[1].checked = false;
+                document.form.medidorTipo[2].checked = true;
+                document.form.medidorTipo[0].disabled = false;
+                document.form.medidorTipo[1].disabled = false;
+                document.form.medidorTipo[2].disabled = false;
+            }
+        }
+        if ( (classe == 'Residencial') || (classe == 'Não Residencial') || (classe == 'Rural')) {
+            if( (document.form.medidorTipo[0].checked == true) && (document.form.medidorTipo[1].disabled == true) && (document.form.medidorTipo[2].disabled == true)) {
+                document.form.medidorTipo[0].checked = false;
+                document.form.medidorTipo[1].checked = false;
+                document.form.medidorTipo[2].checked = true;
+                document.form.medidorTipo[0].disabled = false;
+                document.form.medidorTipo[1].disabled = false;
+                document.form.medidorTipo[2].disabled = false;
+            }
+        }
+    }
+    function abrir(url){
+        var and = window.open(url, "abrir", "directories=no,toolbar=no,menubar=no,scrollbars=yes,resizable=yes,width=668,height=600");
+    }
+    function AbrirConta(){
+        var awc = window.open("teconta.htm", "Conta", "directories=no,toolbar=no,menubar=no,scrollbars=yes,resizable=yes,width=629,height=300");
+    }
+    function ajustarTela() {
+
+			if (navigator.appName.toLowerCase() == "netscape")
+        window.scrollTo(0, document.anchors['res'].y);
+    else
+				document.location.href = "javascript:;";
+
+        }
+
+    function newWindow(url){
+        window.open(url,'external','directories=no,toolbar=no,menubar=no,scrollbars=yes,resizable=no,width=660,height=410,left=20,top=20');
+    }
+    function calcularResultado(){
+        var classe   = document.form.classeConsumo.value;
+        if (document.form.consumoAtual.value.length<1){
+            alert('Preencha o consumo atual.');
+            document.form.consumoAtual.focus();
+            return;
+        }
+
+
+
+        document.getElementById('hidresultado').value="sim";
+        document.form.consumoAtual.value = PadraoBRParaEUA(document.form.consumoAtual.value.replace(/ /g, ""));
+        document.form.submit();
+    }
+
+
+    // -
+
+    function SomenteNumero(e){
+        var tecla=(window.event)?event.keyCode:e.which;
+        if((tecla>47 && tecla<58)) return true;
+        else{
+            if (tecla==8 || tecla==0) return true;
+            else
+                alert("Digite apenas números neste campo.");
+            return false;
+        }
+    }
+
+    // |
+
+
+
+    //-->
+
+
+
+
+    //
+    //	   // Valida se é só numeros- 18/11/2012
+    //            function numeros(ie, ff) {
+    //                if (ie) {
+    //                    tecla = ie;
+    //                } else {
+    //                    tecla = ff;
+    //                }
+    //
+    //                /**
+    //                 * 13 = [ENTER]
+    //                 * 8  = [BackSpace]
+    //				 * 9  = [TAB]
+    //				 * 46 = [Delete]
+    //                 * 48 a 57 = São os números
+    //                 */
+    //            	if ((tecla >= 48 && tecla <= 57) || (tecla == 8) || (tecla == 13) || (tecla == 9) || (tecla == 46)) {
+    //            		return true;
+    //            	}
+    //            	else {
+    //            		return false;
+    //
+    //            	}
+    //            }
+    //
+    //	//
+
+    ////Verifica navegadores
+    //	var navG = (document.layers);
+    //	var iex = (document.all);
+    //
+    //
+    //// Funcionar scripts no firefox
+
+
+    //function PermiteNumeros()
+    //{
+
+
+    //var tecla = window.event.keyCode;
+    //tecla     = String.fromCharCode(tecla);
+    //if(!((tecla >= "0") && (tecla <= "9")))
+    //{
+    //window.event.keyCode = 0;
+
+    //  }
+    //
+    //
+    //
+    //  }
+
+
+
+
+
+    </script>
+</head>
+<body onload="ajustarTela();defTipoInstalacao()">
+    <map name="leitura">
+<area alt="Simuladores" coords="115,1,210,20" href="/institucional/atendimento/simuladores/tesimuladores.shtml" shape="RECT">
+</map>
+    <form action="/Conta/teSimuladorConta_2.asp" name="form" method="post">
+        <input type="hidden" name="hidresultado" id="hidresultado" value="" />
+        <table border="0" width="768" id="conteudo" cellspacing="0" cellpadding="0">
+            <tr width="768">
+                <td width="100%" height="100" class="txt_conteudo" valign="top" style="padding-left: 12; padding-top: 10; padding-bottom: 0;">
+                    <table border="0" width="100%" id="tabela_conteudo" cellspacing="0" cellpadding="0"
+                        style="margin-top: 0;">
+                        <tr style="padding-left: 10; background-color: #FFF;">
+                            <td align="center" class="txt_conteudo" style="padding-right: 15; background-color: #FFF;">
+                                <input type="hidden" name="_action" value="conta" />
+                                <input type="hidden" id="mid" name="mid" value="" />
+                                <table width="500" border="0" cellspacing="0" cellpadding="0" align="center" bgcolor="#FFFFFF">
+                                    <tr>
+                                        <td>
+                                            <div style="background: url('http://www.light.com.br/SiteAssets/images/para-residencias/bg_simulador.jpg') no-repeat; height: 204px">
+                                                <table cellpadding="0" cellspacing="" id="Tabela_01" style="height: 200;">
+                                                    <tr style="height: 20;">
+                                                        <td width="20">&nbsp;
+                                                        </td>
+                                                        <td colspan="2" style="height: 36"></td>
+                                                        <td width="16">&nbsp;
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td width="20">&nbsp;
+                                                        </td>
+                                                        <td width="114">
+                                                            <img src="imgBoxConsulta/box_consulta_05.gif" width="114" height="31" alt="" />
+                                                        </td>
+                                                        <td width="253">
+                                                            <select name="mesRef"  style="font-size:10px"  >
+   <option value="20239">Janeiro/2020</option>
+   <option value="20238" SELECTED>Dezembro/2019</option>
+   <option value="20237">Novembro/2019</option>
+   <option value="20235">Outubro/2019</option>
+   <option value="20234">Setembro/2019</option>
+   <option value="20233">Agosto/2019</option>
+</select>
+
+                                                        </td>
+                                                        <td width="16">&nbsp;
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td width="20">&nbsp;
+                                                        </td>
+                                                        <td width="114">
+                                                            <img src="imgBoxConsulta/box_consulta_09.gif" />
+                                                        </td>
+                                                        <td width="253">
+                                                            <select name="classeConsumo"  style="font-size:10px" onchange="defTipoInstalacao()"  >
+   <option value="Residencial" SELECTED>Residencial</option>
+   <option value="Residencial - Tarifa Social">Residencial&nbsp;-&nbsp;Tarifa&nbsp;Social</option>
+   <option value="N&#227;o Residencial">N&#227;o&nbsp;Residencial</option>
+   <option value="Rural">Rural</option>
+</select>
+
+                                                        </td>
+                                                        <td width="16">&nbsp;
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td width="20">&nbsp;
+                                                        </td>
+                                                        <td colspan="2">
+                                                            <img src="imgBoxConsulta/box_consulta_13.gif" width="366" height="20" alt="" />
+                                                        </td>
+                                                        <td width="16" align="right">&nbsp;
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td width="20">&nbsp;
+                                                        </td>
+                                                        <td colspan="2" align="center">
+                                                            <INPUT type="radio" name="medidorTipo" id="medidorTipo" value="30" ><span style="font-family: verdana; font-size: 11px; color: #E88200">Monofásica</span>
+                                                            <INPUT type="radio" name="medidorTipo" id="medidorTipo" value="50"  checked><span style="font-family: verdana; font-size: 11px; color: #E88200">Bifásica</span>
+                                                            <INPUT type="radio" name="medidorTipo" id="medidorTipo" value="100" ><span style="font-family: verdana; font-size: 11px; color: #E88200">Trifásica</span>
+
+                                                        </td>
+                                                        <td width="16" align="right">&nbsp;
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="4">
+                                                            <table width="100%">
+                                                                <tr>
+                                                                    <td align="right">
+                                                                        <img src="imgBoxConsulta/box_consulta_23.gif" alt="" />
+                                                                    </td>
+                                                                    <td style="background-color: #f2f8f4;">
+                                                                        <input type="text" name="consumoAtual" maxlength="4" size="5" onkeypress="return SomenteNumero(event)" onFocus="this.select()" value="300">
+                                                                    </td>
+                                                                    <td>
+                                                                        <img src="images/bt_mostrar_result.jpg" alt="" border="0" usemap="#FPMap0Map" style="margin-top: 0px" />
+                                                                        <map name="FPMap0Map" id="FPMap0Map">
+                                                                            <area alt="" href="javascript:calcularResultado()" shape="rect" coords="1, 2, 102, 22" />
+                                                                        </map>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <br />
+                                <br />
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <!--  <div  id='borda'
+                                    style=" width:55px; height:20px;  border:solid 3px Red;  color: White; position:absolute; top: 196px; left: 655px;
+                              font-size:small; display:none">
+
+
+
+                            </div>
+                            <div  id='aviso'
+                                    style=" width:300; height:29px; margin:auto; border-radius:2px; border:solid 1px #fcb131; padding-left:50px; padding-top:5px; color: White; position:absolute; top: 240px; left: 516px;
+                             background-color:#fcb131; font-size:small;display:none">
+
+                            Digitar APENAS números
+
+                            </div>-->
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table width="500" border="0" cellspacing="0" cellpadding="0" align="center">
+                                    <tr>
+                                        <td style="padding-top: 20px" class="style1">
+                                            <a href="http://www.light.com.br/para-residencias/Simuladores/simuladorLeitura.aspx">
+                                                <img alt="" src="images/cliqueaqui_leitura1.gif" border="0" onmouseover="this.src='images/cliqueaqui_leitura2.gif'"
+                                                    onmouseout="this.src='images/cliqueaqui_leitura1.gif'" /></a>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+            <tr style="background-color: #FFF;">
+                <td>
+                    <table class="3as" align="center" width="400px" bgcolor="#FFFFFF">
+                        <tbody>
+                            <tr>
+                                <td width="60%" valign="top">
+                                    <!-- 1 DIREITA INICIO -->
+                                    <h2 style="padding-top: 20px; display: none" id="tit_classe_h2_baixa">Cliente Residencial - Tarifa Social
+                                    </h2>
+                                    <h2 style="padding-top: 20px" id="tit_classe_h2">Cliente
+                                    Residencial
+                                    </h2>
+                                    <a name="res">&nbsp;</a>&nbsp;<img alt="" src="images/tiresult.gif" width="70" height="13"
+                                        border="0" />
+
+                                    <table cellpadding="0" cellspacing="0" border="0" align="center" id="tabela_tarifas1">
+                                        <tr>
+                                            <td valign="top">
+                                                <img alt="" src="images/fgrespost_01e.gif" width="51" height="47" border="0" />
+                                            </td>
+                                            <td width="561" height="47" background="images/fgrespost_01c.gif" id="dados1">
+                                                <strong>Mês de Referência:</strong>
+                                                Dezembro/2019<br />
+                                                <strong>Classe de Consumo:</strong>
+                                                Residencial
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" background="images/fgrespost_02.gif" style="padding: 5px 30px;" align="center">
+                                                <!-- CONTEUDO INICIO -->
+                                                <!-- tabela inicio -->
+                                                <table class="tabelaConta" id="tb-descricao" width="100%">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Descrição
+                                                            </th>
+                                                            <th>Unidade
+                                                            </th>
+                                                            <th>Qtde
+                                                            </th>
+                                                            <th>Preço Unit R$
+                                                            </th>
+                                                            <th>Valor R$
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td align="left" valign="top">FORNECIMENTO DE ENERGIA ELÉTRICA
+                                                            </td>
+                                                            <th align="center" valign="top">kWh
+                                                            </th>
+                                                            <th align="center" valign="top">
+                                                                300
+                                                            </th>
+                                                            <th align="right" valign="top">
+                                                                0,79206
+                                                            </th>
+                                                            <th align="right" valign="top">
+                                                                237,61
+                                                            </th>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                                <!-- tabela fim -->
+
+                                                <table width="100%">
+                                                    <tr>
+                                                        <td width="50%" valign="top">
+                                                            <!-- i esq -->
+                                                            <table class="tabelaConta" width="100%">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>&nbsp;
+                                                                        </th>
+                                                                        <th>ICMS R$
+                                                                        </th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td>Base de cálculo
+                                                                        </td>
+                                                                        <th>
+                                                                            237,61
+                                                                        </th>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Alíquota
+                                                                        </td>
+                                                                        <th>
+                                                                            18%
+                                                                        </th>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Valor (já incluído no preço)
+                                                                        </td>
+                                                                        <th>
+                                                                            42,76
+                                                                        </th>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                            <!-- f esq -->
+                                                        </td>
+                                                        <td width="50%" valign="top">
+                                                            <!-- i dir -->
+                                                            <table class="tabelaConta" width="100%">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td id="total-a-pagar">
+                                                                            <strong>Total a pagar R$</strong>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td align="right" id="total-a-pagar-valor">
+                                                                            <strong>
+                                                                                237,61</strong>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                            <!-- f dir -->
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                                <!-- CONTEUDO FIM -->
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                <img alt="" src="images/fgrespost_03.gif" width="473" height="27" border="0" /><a
+                                                    href="javascript:clearForm(form)"><img alt="" src="images/fgrespost_03b.gif" width="138"
+                                                        height="27" border="0" /></a>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <!-- 1 DIREITA FIM -->
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td width="60%" valign="top">
+                                    <br />
+                                    <table cellpadding="0" cellspacing="0" border="0" align="center" id="tabela_tarifas2">
+                                        <tr>
+                                            <td valign="top">
+                                                <img src="images/fgrespost_01e.gif" width="51" height="47" border="0" alt="" />
+                                            </td>
+                                            <td width="561" height="47" background="images/fgrespost_01c.gif" id="dados1">
+                                                <strong>Mês de Referência:</strong>
+                                                Dezembro/2019<br />
+                                                <strong>Classe de Consumo:</strong> Residencial - Tarifa Social
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" background="images/fgrespost_02.gif" style="padding: 5px 30px;" align="center">
+                                                <table class="tabelaConta" id="tb-descricao">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Descrição
+                                                            </th>
+                                                            <th>Unidade
+                                                            </th>
+                                                            <th>Qtde
+                                                            </th>
+                                                            <th>Preço Unit R$
+                                                            </th>
+                                                            <th>Valor R$
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td align="left" valign="top">FORNECIMENTO DE ENERGIA ELÉTRICA
+                                                            </td>
+                                                            <th align="center" valign="top">kWh
+                                                            </th>
+                                                            <th align="center" valign="top">
+                                                                <div  class="faixa_hide_1">30</div><div  class="faixa_hide_2">70</div><div  class="faixa_hide_3">0</div><div  class="faixa_hide_4">120</div><div  class="faixa_hide_5">80</div>
+                                                            </th>
+                                                            <th align="right" valign="top">
+                                                                <div  class="faixa_hide_1">0,24984</div><div  class="faixa_hide_2">0,42831</div><div  class="faixa_hide_3">0,42831</div><div  class="faixa_hide_4">0,64245</div><div  class="faixa_hide_5">0,71384</div>
+                                                            </th>
+                                                            <th align="right" valign="top">
+                                                                <div class="faixa_hide_1">7,50</div><div class="faixa_hide_2">29,98</div><div class="faixa_hide_3">0,00</div><div class="faixa_hide_4">77,09</div><div class="faixa_hide_5">57,11</div>
+                                                            </th>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+
+                                                <table width="100%">
+                                                    <tr>
+                                                        <td width="50%" valign="top">
+                                                            <table class="tabelaConta" width="100%">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>&nbsp;
+                                                                        </th>
+                                                                        <th>ICMS R$
+                                                                        </th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td>Base de cálculo
+                                                                        </td>
+                                                                        <th>
+                                                                            171,68
+                                                                        </th>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Alíquota
+                                                                        </td>
+                                                                        <th>
+                                                                            18%
+                                                                        </th>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Valor (já incluído no preço)
+                                                                        </td>
+                                                                        <th>
+                                                                            30,90
+                                                                        </th>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </td>
+                                                        <td width="50%" valign="top">
+                                                            <table class="tabelaConta" width="100%">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td id="total-a-pagar">
+                                                                            <strong>Total a pagar R$</strong>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td id="total-a-pagar-valor">
+                                                                            <strong>
+                                                                                171,68
+                                                                            </strong>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                <img alt="" src="images/fgrespost_03.gif" width="473" height="27" /><a href="javascript:clearForm(form)"><img
+                                                    src="images/fgrespost_03b.gif" width="138" height="27" border="0" alt="" /></a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                <p style="color: #339; background: #CFF; margin: 20px 0; padding: 10px 20px; font-weight: bold">
+                                                    Conforme Lei Federal 12.212/2010, as famílias indígenas e quilombolas inscritas
+                                                no Cadastro Único que atendam ao disposto nos incisos desta lei terão direito a
+                                                desconto de 100% até o limite de consumo de 50 kWh/mês.
+                                                </p>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <!-- f CASO SEJA RESIDENCIAL E MONOFÁSICO -->
+
+                    </table>
+
+                </td>
+            </tr>
+        </table>
+    </form>
+    <script type="text/javascript">if(document.getElementById('tabela_tarifas2')){ document.getElementById('tabela_tarifas2').style.display='none' }</script>
+</body>
+</html>
