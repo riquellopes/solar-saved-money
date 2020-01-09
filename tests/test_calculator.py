@@ -1,6 +1,8 @@
 import os
+import pytest
 import responses
-from calculator import Calculator, SIMULATOR
+from calculator import (
+    Calculator, SIMULATOR, OutOfServiceException, NotFoundException)
 
 DIRNAME = os.path.dirname(__file__)
 
@@ -14,3 +16,22 @@ def test_should_get_the_money_saved_when_put_300_kwh():
     calculator = Calculator.build(Calculator.LIGHT)
 
     assert calculator.calc(300) == 237.61
+
+
+@responses.activate
+def test_should_raise_not_found_exception_when_amount_not_found():
+    responses.add(responses.POST, SIMULATOR, status=200, body='<html></html>')
+
+    calculator = Calculator.build(Calculator.LIGHT)
+
+    with pytest.raises(NotFoundException):
+        calculator.calc(300)
+
+
+@responses.activate
+def test_should_raise_exception_when_status_not_equal_200():
+    responses.add(responses.POST, SIMULATOR, status=500)
+    calculator = Calculator.build(Calculator.LIGHT)
+
+    with pytest.raises(OutOfServiceException):
+        calculator.calc(300)
