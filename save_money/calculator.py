@@ -1,5 +1,6 @@
 import abc
 import os
+import http
 import requests
 from math import ceil
 from lxml import html
@@ -7,6 +8,18 @@ from urllib.parse import urlparse
 from fake_useragent import UserAgent
 
 SIMULATOR = os.environ.get('SIMULATOR')
+
+
+class BaseException(Exception):
+    pass
+
+
+class OutOfServiceException(BaseException):
+    pass
+
+
+class NotFoundException(BaseException):
+    pass
 
 
 class BaseCalculator:
@@ -23,8 +36,10 @@ class BaseCalculator:
 class LightCalculator:
    
     def calc(self, volts: float) -> float:
-        result = self._request(volts)[0]
-        return float(result.replace(',', '.'))
+        response = self._request(volts)
+        if response:
+            return float(response[0].replace(',', '.'))
+        raise NotFoundException()
    
     def _request(self, volts: float) -> str:
         ua = UserAgent()
@@ -53,9 +68,11 @@ class LightCalculator:
 
         response = requests.request(
             "POST", SIMULATOR, data=payload, headers=headers)
-
-        return [e.text_content().strip() for e in html.fromstring(
-            response.text).xpath('//td[@id = "total-a-pagar-valor"]')]
+    
+        if response.status_code == http.HTTPStatus.OK:
+            return [e.text_content().strip() for e in html.fromstring(
+                response.text).xpath('//td[@id = "total-a-pagar-valor"]')]
+        raise OutOfServiceException('')
 
     @property
     def _month_reference(self):
