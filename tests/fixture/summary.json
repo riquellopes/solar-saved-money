@@ -1,0 +1,26 @@
+{
+    "status": "SUCCESS",
+    "fields": [
+        {
+            "label": "now",
+            "value": "-0.026445104599"
+        },
+        {
+            "label": "today",
+            "value": "12.856"
+        },
+        {
+            "label": "week",
+            "value": "94.523"
+        },
+        {
+            "label": "month",
+            "value": "134.707"
+        },
+        {
+            "label": "lifetime",
+            "value": "695.004"
+        }
+    ],
+    "timestamp": 1578781366192
+}
