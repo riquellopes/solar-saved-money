@@ -1,6 +1,7 @@
 import os
 import pytest
 import responses
+from freezegun import freeze_time
 from calculator import (
     Calculator, SIMULATOR, OutOfServiceException, NotFoundException)
 
@@ -35,3 +36,9 @@ def test_should_raise_exception_when_status_not_equal_200():
 
     with pytest.raises(OutOfServiceException):
         calculator.calc(300)
+
+
+@freeze_time("2020-01-11")
+def test_should_get_month_reference_equal_the_20239():
+	calculator = Calculator.build(Calculator.LIGHT)
+	assert calculator._month_reference == 20239

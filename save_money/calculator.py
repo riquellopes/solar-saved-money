@@ -4,10 +4,12 @@ import http
 import requests
 from math import ceil
 from lxml import html
+from datetime import datetime
 from urllib.parse import urlparse
 from fake_useragent import UserAgent
 
 SIMULATOR = os.environ.get('SIMULATOR')
+BASE_MONTH = os.environ.get('BASE_MONTH', 20238)
 
 
 class BaseException(Exception):
@@ -76,8 +78,7 @@ class LightCalculator:
 
     @property
     def _month_reference(self):
-        base_month = 20238
-        return base_month
+        return BASE_MONTH + datetime.now().month
 
 
 class Calculator:
