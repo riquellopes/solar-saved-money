@@ -2,8 +2,8 @@ import abc
 import os
 import http
 import requests
+import re
 from math import ceil
-from lxml import html
 from datetime import datetime
 from urllib.parse import urlparse
 from fake_useragent import UserAgent
@@ -40,7 +40,7 @@ class LightCalculator:
     def calc(self, volts: float) -> float:
         response = self._request(volts)
         if response:
-            return float(response[0].replace(',', '.'))
+            return float(response.replace(',', '.'))
         raise NotFoundException()
    
     def _request(self, volts: float) -> str:
@@ -72,8 +72,16 @@ class LightCalculator:
             "POST", SIMULATOR, data=payload, headers=headers)
     
         if response.status_code == http.HTTPStatus.OK:
-            return [e.text_content().strip() for e in html.fromstring(
-                response.text).xpath('//td[@id = "total-a-pagar-valor"]')]
+            compiled = re.compile("[\n\t\r]")
+            sanitary = compiled.sub("", response.text)
+
+            tags = sanitary.replace(
+                " ", "").split('id="total-a-pagar-valor"')
+            
+            if(tags and len(tags) > 1):
+                return tags[1].replace(
+                    "><strong>", "").split("</strong>")[0]
+            return None
         raise OutOfServiceException('')
 
     @property
