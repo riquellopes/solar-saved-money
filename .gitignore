@@ -110,6 +110,8 @@ ENV/
 env.bak/
 venv.bak/
 .vscode
+.serverless
+node_modules
 
 # Spyder project settings
 .spyderproject
@@ -128,3 +130,8 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# serveless
+package-lock.json
+package.json
+serverless.yml
