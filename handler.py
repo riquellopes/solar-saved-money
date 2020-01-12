@@ -24,7 +24,7 @@ def how_much_money_i_saved(event, context):
         'response': {
             'outputSpeech': {
                 'type': 'PlainText',
-                'text': 'You will save {} real'.format(saved),
+                'text': 'You saved {} reais'.format(saved),
             }
         }
     }
