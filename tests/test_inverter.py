@@ -22,7 +22,7 @@ def test_should_get_134_707_when_call_the_method_getMonthly():
             params_abb.url_summary, status=200, body=json.read())
 
     abb = Abb(params_abb)
-    assert abb.getSummary().getMonthly() == '134.707'
+    assert abb.getSummary().getMonthly() == 134.707
 
 
 @responses.activate
