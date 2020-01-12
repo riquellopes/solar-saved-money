@@ -56,7 +56,7 @@ class SummaryAbb(Summary):
     def getMonthly(self):
         for field in self._response['fields']:
             if field['label'] == 'month':
-                return field['value']
+                return float(field['value'])
     
 
 class Abb(Inverter):
