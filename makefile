@@ -15,4 +15,4 @@ run:
 	python main.py
 
 test:clean
-	PYTHONPATH=save_money pytest -s -v --cov=save_money --cov-report term-missing tests/${path}
+	PYTHONPATH=save_money pytest -s -v --cov=save_money --cov-report term-missing tests/${path} && coveralls --output=coverage.json
